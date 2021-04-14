@@ -291,7 +291,7 @@ def splunk_search_getlog(search_command):
 
 def get_splunk_log_from_domain(session_id, DOMAIN):
     global msg_link_splunk
-    search = 'Search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + DOMAIN + EXCLUDE_DOMAINS + ' (HTTP_CODE=500 OR HTTP_CODE=501 OR HTTP_CODE=502 OR HTTP_CODE=503 OR HTTP_CODE=504 OR HTTP_CODE=404 OR HTTP_CODE=403 OR HTTP_CODE=402 OR HTTP_CODE=401 OR HTTP_CODE=400 ) ' + time_splunk + ' | top limit=20 HTTP_CODE'
+    search = 'Search index=xxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + DOMAIN + EXCLUDE_DOMAINS + ' (HTTP_CODE=500 OR HTTP_CODE=501 OR HTTP_CODE=502 OR HTTP_CODE=503 OR HTTP_CODE=504 OR HTTP_CODE=404 OR HTTP_CODE=403 OR HTTP_CODE=402 OR HTTP_CODE=401 OR HTTP_CODE=400 ) ' + time_splunk + ' | top limit=20 HTTP_CODE'
     output_mode = 'json'
     max_count = 100000
     auth = requests.auth.HTTPBasicAuth(username, password)
@@ -356,19 +356,19 @@ def get_splunk_log_from_domain(session_id, DOMAIN):
                 _http_code == '400' and _count > group_threshold_4xx):
             print "insert to DB 4xx, is on code ", _http_code
 
-            search_getdomain= 'Search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + DOMAIN + ' HTTP_CODE=' + str( _http_code) + time_splunk + ' | top limit=20 DOMAIN'
+            search_getdomain= 'Search index=xxxxxxxxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + DOMAIN + ' HTTP_CODE=' + str( _http_code) + time_splunk + ' | top limit=20 DOMAIN'
 
             _get_domain_list= splunk_search_getdomain(search_getdomain)
             print _get_domain_list
 
             print "Domain to get raw_log is", _get_domain_list[0]['DOMAIN'] #get raw_log in top 1 domain
-            search_raw = 'Search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_get_domain_list[0]['DOMAIN']) + ' HTTP_CODE=' + str( _http_code) + time_splunk
+            search_raw = 'Search index=xxxxxxxxxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_get_domain_list[0]['DOMAIN']) + ' HTTP_CODE=' + str( _http_code) + time_splunk
 
             _get_domain_list= splunk_search_getdomain(search_getdomain)
             print _get_domain_list
 
             print "Domain to get raw_log is", _get_domain_list[0]['DOMAIN'] #get raw_log in top 1 domain
-            search_raw = 'Search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_get_domain_list[0]['DOMAIN']) + ' HTTP_CODE=' + str( _http_code) + time_splunk
+            search_raw = 'Search index=xxxxxxxxxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_get_domain_list[0]['DOMAIN']) + ' HTTP_CODE=' + str( _http_code) + time_splunk
 
             raw_log = splunk_search_getlog(search_raw)
             if raw_log == "failed":
@@ -411,16 +411,16 @@ def get_splunk_log_from_domain(session_id, DOMAIN):
                             else:
                                 print "alert_update_status: {} Update status false" . format(_domain)
 
-			    splunk_get_svr = 'Search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_domain) + ' HTTP_CODE=' + str( _http_code) + ' SERVER_IPPORT=* '  + time_splunk + ' | top limit=20 SERVER_IPPORT'
+			    splunk_get_svr = 'Search index=xxxxxxxxxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_domain) + ' HTTP_CODE=' + str( _http_code) + ' SERVER_IPPORT=* '  + time_splunk + ' | top limit=20 SERVER_IPPORT'
 
                             print "command to get svr: ", splunk_get_svr
                             _get_svr_list = splunk_search_getdomain(splunk_get_svr)
                             print _get_svr_list
                             if _get_svr_list != "failed":
-                                msg_search_splunk = 'search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_domain) + ' HTTP_CODE=' + str( _http_code) + ' SERVER_IPPORT=*  IP_SOURCE=* ' +  ' earliest=-1h latest=now'
+                                msg_search_splunk = 'search index=xxxxxxxxxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_domain) + ' HTTP_CODE=' + str( _http_code) + ' SERVER_IPPORT=*  IP_SOURCE=* ' +  ' earliest=-1h latest=now'
                                 msg_search_splunk = urllib.quote(msg_search_splunk)
-                                msg_link_splunk = "https://10.3.65.136:8000/en-US/app/search/search?q=" + msg_search_splunk
-                                history_graph = "https://grafana.cnht.vn/d/d3VJnJSMz/ddos-sla-site?var-http=" + str( _http_code) + "&var-domain=" + str(_domain)
+                                msg_link_splunk = "https://a.b.c.d:8000/en-US/app/search/search?q=" + msg_search_splunk
+                                history_graph = "https://grafana.x.y/d/d3VJnJSMz/ddos-sla-site?var-http=" + str( _http_code) + "&var-domain=" + str(_domain)
 
 #                                svr_text = svr_text + _domain + " <a href='" + msg_link_splunk + " '> Trouble  </a>" + "- <a href='" + history_graph + " '> History </a> \n"
                                 svr_text = svr_text + " <a href='" + msg_link_splunk + " '>" +  _domain + " </a>" + "\n"            
@@ -474,13 +474,13 @@ def get_splunk_log_from_domain(session_id, DOMAIN):
             have_result = True
             print "insert to DB 5xx, on code:", _http_code
 
-            search_getdomain= 'Search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + DOMAIN + ' HTTP_CODE=' + str( _http_code) + time_splunk + ' | top limit=20 DOMAIN'
+            search_getdomain= 'Search index=xxxxxxxxxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + DOMAIN + ' HTTP_CODE=' + str( _http_code) + time_splunk + ' | top limit=20 DOMAIN'
 
             _get_domain_list= splunk_search_getdomain(search_getdomain)
             print _get_domain_list
 
             print "Domain to get raw_log is", _get_domain_list[0]['DOMAIN'] #get raw_log in top 1 domain
-            search_raw = 'Search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_get_domain_list[0]['DOMAIN']) + ' HTTP_CODE=' + str( _http_code) + time_splunk
+            search_raw = 'Search index=xxxxxxxxxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_get_domain_list[0]['DOMAIN']) + ' HTTP_CODE=' + str( _http_code) + time_splunk
 
             raw_log = splunk_search_getlog(search_raw)
             if raw_log == "failed":
@@ -523,15 +523,15 @@ def get_splunk_log_from_domain(session_id, DOMAIN):
                             else:
                                 print "alert_update_status: {} Update status false" . format(_domain)
                             #Get error server
-                            splunk_get_svr = 'Search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_domain) + ' HTTP_CODE=' + str( _http_code) + ' SERVER_IPPORT=* '  + time_splunk + ' | top limit=20 SERVER_IPPORT'
+                            splunk_get_svr = 'Search index=xxxxxxxxxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_domain) + ' HTTP_CODE=' + str( _http_code) + ' SERVER_IPPORT=* '  + time_splunk + ' | top limit=20 SERVER_IPPORT'
                             print "command to get svr: ", splunk_get_svr
                             _get_svr_list = splunk_search_getdomain(splunk_get_svr)
                             print _get_svr_list
                             if _get_svr_list != "failed":
-                                msg_search_splunk = 'search index=vccl_dc_svr_haproxy FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_domain) + ' HTTP_CODE=' + str( _http_code) + ' SERVER_IPPORT=*  IP_SOURCE=* ' +  ' earliest=-1h latest=now'
+                                msg_search_splunk = 'search index=xxxxxxxxxxx FRONTEND=* NOT "TCP"' + ' DOMAIN=' + str(_domain) + ' HTTP_CODE=' + str( _http_code) + ' SERVER_IPPORT=*  IP_SOURCE=* ' +  ' earliest=-1h latest=now'
                                 msg_search_splunk = urllib.quote(msg_search_splunk)
-                                msg_link_splunk = "https://10.3.65.136:8000/en-US/app/search/search?q=" + msg_search_splunk
-                                history_graph = "https://grafana.cnht.vn/d/d3VJnJSMz/ddos-sla-site?var-http=" + str( _http_code) + "&var-domain=" + str(_domain)
+                                msg_link_splunk = "https://a.b.c.d:8000/en-US/app/search/search?q=" + msg_search_splunk
+                                history_graph = "https://grafana.x.y/d/d3VJnJSMz/ddos-sla-site?var-http=" + str( _http_code) + "&var-domain=" + str(_domain)
 
                                 svr_text = svr_text + " <a href='" + msg_link_splunk + " '>" +  _domain + " </a>" + "\n"
                                 svr_text = svr_text \
@@ -587,7 +587,7 @@ def get_splunk_log_from_domain(session_id, DOMAIN):
 if __name__ == "__main__":
     session_id = uuid.uuid4()
 
-    DOMAIN_LIST = ["*vivavietnam.vn", "*vivavietnam.vn", "*aiservice.vn", "*pega.vn", "*deqik.com", "*socialindex.vn", "*surfcountor.com","*mobilead.vn", "*weball.vn", "*viewplus.vn", "*kinglive.vn", "*lavadin.com", "*lotus.vn", "*admicro.vn", "*cnnd.vn","*soha.vn", "*cafef.vn", "*cafebiz.vn", "*autopro.com.vn", "*genk.vn", "*gamek.vn", "*kenh14.vn", "*afamily.vn", "*vtv.vn", "*giadinh.net.vn", "*nld.com.vn", "*vneconomy.vn", "*ttvn.vn", "*vce.vn","*maoristudio.net", "*tuoitre.vn", "*vcmedia.vn", "*bizflycloud.vn", "*ewings.vn","*sohagame.vn","*sohatv.vn","*linkhay.vn", "*kinghub.vn", "*vietid.net","*sohacorp.vn", "*viewplus.vn","*nanda.vn", "*lotuscdn.vn", "*linkhay.com", "*mediacdn.vn", "*hot14.vn", "*toquoc.vn", "*nhipsongkinhte.vn", "*danviet.vn", "*cnht.vn", "*nhadat.vn", "*vccloud.vn","*suckhoehangngay.vn", "*vietnammoi.vn", "*vietnambiz.vn", "*phunuvietnam.com.vn","*phunuvietnam.vn", "*etime.com.vn","*doanhnghieptiepthi.vn", "*trangtraiviet.vn", "*langcuoi.vn","*phapluatxahoi.vn", "*afemmelist.vn", "*cinet.vn", "*ictvietnam.vn", "*theothaovanhoa.vn", "*ltus.me", "*gov.vn", "*omgnature.com", "*vccorp.vn", "*wow-media.vn", "*wowholiday.vn", "*marketing-vn.com", "*dienanhtrongtamtay.com", "*iztrip.vn", "*wingstudio.vn", "*lapvip.vn", "*bipbip.vn", "*sohaplay.vn", "*ming.vn", "*socnhi.com.vn", "*eat.vn", "*trunkpkg.com", "*amcdn.vn", "*socnhi.com", "*welax.vn", "*dthp.vn", "*bff.vn", "*bikipmuathi.vn", "*connectg.info", "*sohacoin.vn", "*gocnhin.com", "*mysoha.vn", "*ttvnol.com", "*bizfly.vn", "*ovem.vn"]
+    DOMAIN_LIST = ["*vtv.vn", "*autopro.com.vn"]
 
     with ThreadPoolExecutor(max_workers=10) as executor:
         future_to_domain = {executor.submit(get_splunk_log_from_domain,session_id, DOMAIN): DOMAIN for DOMAIN in DOMAIN_LIST}
